@@ -1,0 +1,104 @@
+mongosh
+show databases
+show collections
+use collections
+use database name 
+
+db.users.inserOne({
+    name:'ghgg'
+})
+db.users.insertmany([
+    { },
+    { },
+])
+db.users.find().limit(1)
+db.users.find({naem:'ggh'})
+it gives only the first one
+
+each object has unique _id 
+
+
+db.users.find({age:{$gt:50}})
+db.users.find({age:{$in:[26,89]}})
+db.users.find({age:{$nin:[26,89]}})
+
+>= gte
+eq: 
+
+db.users.find({$or:[{age:30},{age:50}]})
+db.users.find({$nor:[{age:30},{age:50}]})
+db.users.find({$and:[{age:30},{name:'aaj'}]})
+db.users.countDocuments()
+db.users.countDocuments({age:25})
+db.users.countDocuments({age:{$gt:25}})
+
+db.users.find().sort({name:1})
+
+db.user.countDocuments()
+db.user.find(age:{$lt:30}).count()
+
+db.users.find().sort({age:-1}).limit(6)
+
+db.users.find().skip(6)
+db.users.find().sort({age:-1}).skip(6)
+
+----------------------
+
+db.products.insertOne({
+    name:'oppo',
+    price:6688,
+    tags:['goodmobile','android']
+})
+db.products.insertOne({
+    name:'nokia',
+    price:8999,
+    tags:['goodmobile','android']
+})
+
+db.products.find()
+
+db.products.updateOne({name:'nokia'},{$set:{price:7999}})
+db.products.updateMany({price:999},{$set:{name:'salemobile'}})
+
+db.products.deleteOne({name:'salemobile'})
+
+db.users.find({},{first_name:1}) by defauly u can see the ids
+
+db.users.find({},{first_name:1,_id:0}) by giving id=0   1 means show
+db.users.find({},{first_name:1,_id:0,last_name:1})
+db.users.find({},{first_name:/^a/,_id:0}) name satrt with a
+db.users.find({},{first_name:/aj$/,_id:0}) name wnds with 
+db.collection.find({ field: /^exactMatch$/ });  This query finds documents where the "field" exactly matches "exactMatch."
+{ field: /pattern/i }
+{ field: /.*pattern.*/ } pattern anywere
+db.collection.find({ field: { $regex: "pattern" } });
+db.collection.find({ field: { $not: /^pattern/ } });
+Which command helps to get first 10 documents from mongoDB collection.
+db.getCollection('name of your collection').find({}).sort(10)
+
+Which utility helps in generating the backup of MongoDB database.
+mongodump
+
+By default, the MongoDB cursor in mongo shell is configured to return how many documents? To get the next set of documents, which command is used?
+20, it
+
+aggregation option is used to specify the specific fields that needs to be passed to the next stage of the aggregation pipeline:
+$project
+
+
+-----
+mongodb atlas:
+fully managed cloud db service provided by mongodbit is desgned tos simplify the deployment
+and scaling of db
+
+mongodbcompasss(local ) 
+atlas cloud
+
+--------------------------------------
+db.users.updateOne({name:'hjh'},{$set:{age:40}})
+db.user.updateMany({age:{$gt:78}},{$set:{age:40}})
+db.user.updateMany({age:{$gt:78}},{$inc:{age:6}})
+db.user.updateMany({age:{$gt:78}},{$inc:{age:-6}})
+db.user.updateMany({age:{$gt:5}},{$mul:{age:2}})
+db.user.updateMany({age:{$gt:78}},{$rename:{age:'age_new'}})
+db.user.updateMany({age:{$gt:78}},{$unset:{age:''}})

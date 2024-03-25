@@ -1,0 +1,247 @@
+dbms
+rdbms
+
+unstructured: mongodb,nosql
+structured sql: mysql
+
+3 tier arch
+client--server-- db
+
+crud 
+
+create databases
+create table table name (column 1 data type)
+
+create table User (
+    id int,
+    username varchar(24),
+    firstname varchar(255),
+    lastname varchar(255),
+    email varchar(255)
+);
+
+insert into user
+values (1, ‘john1’, ‘John’, ‘Wick’, ‘john.wick@gmail.com’);
+use world;
+show tables;
+
+select * from user order by name  desc
+
+select max(id) from user
+avg,sum,count
+
+Commonly used constraints:
+NOT NULL - It defines that the column cannot have a null value.
+UNIQUE - It defines that all the values in a column should be unique.
+PRIMARY KEY - A combination of a NOT NULL and UNIQUE. Uniquely identifies each row in a table.
+FOREIGN KEY - Uniquely identifies a row/record in another table.
+
+CREATE TABLE {TableName}(
+    ID int AUTO_INCREMENT,
+    PRIMARY KEY (ID)
+);
+
+
+CREATE TABLE {TableName}(
+    orderID int,
+    ordernmae int,
+    personID int,
+    PRIMARY KEY (orderID),
+    FOREIGN KEY (personID) REFERENCES {OtherTableName/person}(personID-other)
+);
+
+er diagram 
+
+realtime entity --analyst 
+entities anything
+attributes properties for entities
+relationship
+
+A JOIN clause is used to combine rows from two or more tables, based on a related column between them.
+(INNER) JOIN: Returns records that have matching values in both tables
+LEFT (OUTER) JOIN: Returns all records from the left table, and the matched records from the right table
+RIGHT (OUTER) JOIN: Returns all records from the right table, and the matched records from the left table
+FULL (OUTER) JOIN: Returns all records when there is a match in either left or right table
+
+SELECT table1.column1,table1.column2,table2.column1,....
+FROM table1 
+INNER JOIN table2
+ON table1.matching_column = table2.matching_column
+WHERE table1.column=val….;
+
+select * from user order by age desc limit 5 offset 2
+
+offset exclude 2
+
+alter table students add dob varchar(25)
+---------------------------
+ddl 
+
+Data Definition Language (DDL) commands in SQL are used to define, modify, and manage the structure of a database, including tables, indexes, and constraints. Here are some common DDL commands with examples:
+
+CREATE TABLE:
+
+This command is used to create a new table in the database.
+sql
+Copy code
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Email VARCHAR(100) UNIQUE,
+    CreatedDate DATE
+);
+
+ALTER TABLE:
+
+This command is used to modify an existing table, such as adding, modifying, or dropping columns.
+sql
+Copy code
+ALTER TABLE Customers
+ADD Phone VARCHAR(15);
+
+DROP TABLE:
+
+This command is used to delete an existing table along with all its data.
+sql
+Copy code
+DROP TABLE Customers;
+
+CREATE VIEW:
+
+This command is used to create a virtual table based on the result of a SELECT query.
+sql
+Copy code
+CREATE VIEW HighValueCustomers AS
+SELECT *
+FROM Customers
+WHERE PurchaseAmount > 1000;
+
+DROP VIEW HighValueCustomers;
+ALTER TABLE Orders
+ADD FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID);
+
+ALTER TABLE Orders
+DROP FOREIGN KEY CustomerID;
+
+---------------------------
+Data Manipulation Language (DML) commands in SQL are used to manipulate and interact with data stored in a database. The primary DML commands are SELECT, INSERT, UPDATE, and DELETE. Here are examples of each:
+SELECT FirstName, LastName
+FROM Customers
+WHERE Country = 'USA';
+
+INSERT INTO Customers (FirstName, LastName, Email)
+VALUES ('John', 'Doe', 'johndoe@example.com');
+
+UPDATE Customers
+SET LastName = 'Smith'
+WHERE CustomerID = 1;
+
+DELETE FROM Customers
+WHERE CustomerID = 1;
+
+MERGE (SQL Server):
+
+The MERGE statement combines INSERT, UPDATE, and DELETE operations into one. It's useful for performing "upsert" operations.
+MERGE INTO TargetTable AS Target
+USING SourceTable AS Source
+ON Target.ID = Source.ID
+WHEN MATCHED THEN
+    UPDATE SET Target.Value = Source.Value
+WHEN NOT MATCHED THEN
+    INSERT (ID, Value)
+    VALUES (Source.ID, Source.Value);
+
+-- PostgreSQL
+INSERT INTO table_name (column1, column2, ...)
+VALUES (value1, value2, ...)
+ON CONFLICT (conflict_column)
+DO UPDATE SET column1 = value1, column2 = value2, ...
+
+-- MySQL
+INSERT INTO table_name (column1, column2, ...)
+VALUES (value1, value2, ...)
+ON DUPLICATE KEY UPDATE column1 = value1, column2 = value2;
+
+index--
+-------------------------
+create view hghh as select userid,prod from users here userid=9
+
+for virtual table ,instead of complex query we usae view
+so u can alo create view ghgh as select jj.id user innerjoin product where 
+
+-----------------
+composite and candidate KEY
+
+candidate key;
+the minimal set of attributes that can uniquely identifies tuple
+if there are 2 rows with same name but unique id 
+it can store null values, unique
+student table both student id and email can consider as candidate key
+
+composite /compound key 
+is a key that consists of two or more columns in a database table, used together to uniquely identify records. 
+In an "Orders" table, a composite key might be composed of both "OrderID" and "CustomerID" columns. In this case, no single "OrderID" or "CustomerID" alone can uniquely identify an order, but the combination of these two columns does.
+
+----------------------
+SELECT *
+FROM EmployeeDetails
+WHERE MONTH(DateOfJoining) = 1;
+
+SELECT EmployeeDetails.*
+FROM EmployeeDetails
+WHERE EmployeeDetails.EmpId NOT IN (SELECT EmpId FROM EmployeeSalary);
+
+5)..Write an SQL query to fetch a project-wise count of employees.
+  
+ SELECT Project, COUNT(EmpId) AS EmployeeCount FROM EmployeeSalary
+GROUP BY Project;
+
+Fetch employee names and salaries even if the salary value is not present for the employee:
+In the SQL query you provided, COALESCE is a function used to handle NULL values. 
+SELECT E.FullName, COALESCE(S.Salary, 0) AS Salary
+FROM EmployeeDetails E
+LEFT JOIN EmployeeSalary S ON E.EmpId = S.EmpId;
+
+7)..Write an SQL query to fetch all the Employees who are also managers.
+  
+SELECT * FROM EmployeeDetails
+WHERE EmpId IN (SELECT DISTINCT ManagerId FROM EmployeeDetails WHERE ManagerId IS NOT NULL);
+
+Write an SQL query to fetch duplicate records from EmployeeDetails:
+
+sql
+Copy code
+SELECT EmpId, COUNT(*) AS Count
+FROM EmployeeDetails
+GROUP BY EmpId
+HAVING COUNT(*) > 1;
+
+9)..Write an SQL query to fetch only odd rows from the table
+  
+SELECT * FROM EmployeeDetails
+WHERE MOD(EmpId, 2) <> 0;
+
+10)..Write a query to find the 3rd highest salary from a table without top or limit keyword.
+SELECT Salary
+FROM (
+  SELECT Salary, ROW_NUMBER() OVER (ORDER BY Salary DESC) AS RowNum
+  FROM EmployeeSalary
+) AS RankedSalaries
+WHERE RowNum = 3;
+
+
+
+//normalization
+
+organizating data to reduce data redundancy and improves data integrity
+breaking down a db into multiple tables and define relationship b/w them
+
+//regex
+
+select * from cu where regex 'field'
+select * from cu where regex '^field'  beginning of a string
+select * from cu where regex 'field$' end of a string 
+select * from cu where regex 'field|mavg'
+select * from cu where regex '[gim]e' match any character insie  
+select * from cu where regex '[a-r]'

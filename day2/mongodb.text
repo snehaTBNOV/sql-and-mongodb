@@ -1,0 +1,237 @@
+mpngodb is db baseddb.posts.find({category:'news'})
+
+SQL databases are considered relational databases. They store related data in separate tables. When data is needed, it is queried from multiple tables to join the data back together.
+
+MongoDB is a document database which is often referred to as a non-relational database. This does not mean that relational data cannot be stored in document databases. It means that relational data is stored differently. A better way to refer to it is as a non-tabular database.
+
+MongoDB stores data in flexible documents. Instead of having multiple tables you can simply keep all of your related data together. This makes reading your data very fast.
+
+You can still have multiple groups of data too. In MongoDB, instead of tables these are called collections.
+
+MongoDB Atlas, a cloud database platform. This is much easier than hosting your own local database.
+
+MongoDB Shell, mongosh
+The MongoDB Query API is the way you will interact with your data.
+
+The MongoDB Query API can be used two ways:
+CRUD Operations
+Aggregation Pipelines
+
+create a collections
+db.createCollection("posts")
+
+or 
+db.posts.insertOne(object)
+
+db.posts.insertOne({
+    title:'phbh',
+    body:'hvh',
+    tags:['bnbn','hhh'],
+    likes:1,
+    date:Date()
+
+})
+
+answer  
+
+ {
+  acknowledged: true,
+  insertedId: ObjectId("62c350dc07d768a33fdfe9b0")
+}
+
+/if u wnat to insert many 
+user 
+db.abc.insertMany([
+    {
+
+    },
+    {
+
+    },
+    {
+
+    }
+])
+
+---------------
+
+This method accepts a query object. If left empty, all documents will be returned.
+
+db.hgh.find()
+
+to selct one 
+db.hh.findOne()
+
+
+query/filter data
+db.gh.find({date:Date()})
+Both find methods accept a second parameter called projection.
+
+This parameter is an object that describes which fields to include in the results
+db.posts.find({}, {title: 1, date: 1})
+We use a 1 to include a field and 0 to exclude a field.
+db.posts.find({}, {_id: 0, title: 1, date: 1})
+
+db.posts.find({}, {category: 0})  it exclude category all other fields will be presnt
+db.posts.find({}, {title: 1, date: 0}) error cant use 0 and  1
+
+
+--------------
+
+To update an existing document we can use the updateOne() or updateMany() methods.
+
+db.ahh.updateOne({title:'ghhghh'},{$set: {likes:677}})
+
+upsert if tht is not present 
+
+db.hjh.updateOne({name:'sneha'},{
+    $set: 
+    {
+        name:'sneha',
+        age:27,
+        job:'it',
+        place:'uk'
+    }
+},
+{upsert:true}
+)
+
+if u wnat to update all socuemnts field value as same 
+use $inc
+
+db.hjhj.updateMany({},{$inc:{likes:67}})
+
+db.posts.deleteOne({ title: "Post Title 5" })
+
+db.posts.deleteMany({ category: "Technology" })
+#
+-----
+
+$eq: Values are equal
+$ne: Values are not equal
+$gt: Value is greater than another value
+$gte: Value is greater than or equal to another value
+$lt: Value is less than another value
+$lte: Value is less than or equal to another value
+$in: Value is matched within an array
+
+$regex: Allows the use of regular expressions when evaluating field values
+$text: Performs a text search
+$where: Uses a JavaScript expression to match documents
+
+
+$and not or nor
+
+$currentDate: Sets the field value to the current date
+$inc: Increments the field value
+$rename: Renames the field
+$set: Sets the value of a field
+$unset: Removes the field from the document
+
+$addToSet: Adds distinct elements to an array
+$pop: Removes the first or last element of an array
+$pull: Removes all elements from an array that match the query
+$push: Adds an element to an array
+
+aggregate 
+
+db.hgh.aggregate([
+    {
+$match:{likes:{$gt:6}}
+    },
+    {
+$group:{_id:"$category",totallikes:{$sum:"$likes"}}
+    }
+])
+
+
+_id is not same as object id .this id is unique one to identify the objects
+
+db.listingsAndReviews.aggregate(
+    [ { $group : { _id : "$property_type" } } ]
+)
+
+limit 
+db.movies.aggregate([ { $limit: 1 } ])   
+
+$project
+
+db.ghgh.aggregate([
+    {
+     $project:{
+        'name':1,
+     }
+    },
+    {
+        $limit:5
+    }
+])
+
+
+db.listingsAndReviews.aggregate([ 
+  { 
+    $sort: { "accommodates": -1 } 
+  },
+  {
+    $project: {
+      "name": 1,
+      "accommodates": 1
+    }
+  },
+  {
+    $limit: 5
+  }
+]) 
+1 is ascending and -1 is descending.
+
+db.listingsAndReviews.aggregate([ 
+  { $match : { property_type : "House" } },
+  { $limit: 2 },
+  { $project: {
+    "name": 1,
+    "bedrooms": 1,
+    "price": 1
+  }}
+])
+
+db.restaurants.aggregate([
+  {
+    $match: { "cuisine": "Chinese" }
+  },
+  {
+    $count: "totalChinese"
+  }
+])
+
+db.ghg.aggregate([
+    
+    {
+        $lookup:{
+            from:'movies',
+            localField:'movies-id',
+            foreignFiled:'_id',
+            as:'moviedetails',
+        },
+    },
+    {
+        $limit:1
+    }
+])
+
+The $out stage must be the last stage of the aggregation pipeline
+
+db.listingsAndReviews.aggregate([
+  {
+    $group: {
+      _id: "$property_type",
+      properties: {
+        $push: {
+          name: "$name",
+          accommodates: "$accommodates",
+          price: "$price",
+        },
+      },
+    },
+  },
+  { $out: "properties_by_type" },
+])
